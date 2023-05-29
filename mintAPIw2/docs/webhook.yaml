@@ -1,0 +1,46 @@
+openapi: 3.0.0
+info:
+  title: Web2 Ticketing Webhook API
+  version: 1.0.0
+paths:
+  /webhooks/ticket-purchase:
+    post:
+      summary: Notify ticket purchase
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketPurchase'
+      responses:
+        '200':
+          description: Notification received successfully
+        '400':
+          description: Bad request
+
+components:
+  schemas:
+    TicketPurchase:
+      type: object
+      required:
+        - eventId
+        - ticketId
+        - buyer
+        - extras
+      properties:
+        eventId:
+          type: string
+          format: uuid
+          description: The unique identifier of the event
+        ticketId:
+          type: string
+          format: uuid
+          description: The unique identifier of the purchased ticket (NFT)
+        buyer:
+          type: string
+          description: The name or identifier of the ticket buyer
+        extras:
+          type: array
+          items:
+            type: string
+          description: A list of extra features or privileges included with the ticket, such as VIP access or backstage passes

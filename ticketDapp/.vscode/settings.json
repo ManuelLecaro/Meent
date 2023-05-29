@@ -1,4 +1,0 @@
-{
-    "solidity.defaultCompiler": "remote",
-    "solidity.packageDefaultDependenciesDirectory": "path/to/sub/dir/node_modules"
-}
