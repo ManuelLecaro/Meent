@@ -4,18 +4,16 @@ package domain;
 option go_package = "github.com/ManuelLecaro/mintapi/internal/domain";
 
 // Identificador único para un evento.
-message EventId {
-  string value = 1;
-}
 
 // Información sobre un evento.
 message Event {
-  EventId id = 1;
+  uint64 id = 1;
   string name = 2;
   string description = 3;
   uint64 date = 4; // Unix timestamp
   Venue venue = 5;
   repeated Ticket tickets = 6;
+  repeated string specialFeatures = 7;
 }
 
 // Información sobre una ubicación de evento.
@@ -24,16 +22,13 @@ message Venue {
   string address = 2;
 }
 
-// Identificador único para un boleto.
-message TicketId {
-  string value = 1;
-}
-
 // Información sobre un boleto.
 message Ticket {
-  TicketId id = 1;
+  uint64 id = 1;
   string owner = 2; // Dirección de la billetera Web3 del propietario.
   uint64 price = 3; // En wei, para compatibilidad con Ethereum.
+  uint64 showID = 4;
+  string metadata = 5;
 }
 
 

@@ -39,13 +39,42 @@ func (r CreateEventRequest) toDomainEvent() *domain.Event {
 	}
 }
 
-func (e *Event) NewEvent(srv service.Event) *Event {
+func NewEvent(srv service.Event) *Event {
 	return &Event{
 		EventSrv: srv,
 	}
 }
 
 func (e *Event) HandleCreate(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+
+	var req CreateEventRequest
+
+	if err := e.getAndValidateBody(c, req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
+	}
+
+	resultChan := make(chan struct {
+		Value *domain.Event
+		Error error
+	})
+
+	go func() {
+		res, err := e.EventSrv.Create(ctx, req.toDomainEvent())
+
+		resultChan <- struct {
+			Value *domain.Event
+			Error error
+		}{Value: res, Error: err}
+	}()
+
+	handleResponse(c, resultChan, http.StatusCreated)
+}
+
+func (e *Event) HandleGet(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 

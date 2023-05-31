@@ -5,6 +5,7 @@ import (
 	"crypto/ecdsa"
 	"log"
 	"math/big"
+	"mintapi/internal/infra/config"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -12,7 +13,8 @@ import (
 )
 
 type EthBaseClient struct {
-	Client *ethclient.Client
+	Client  *ethclient.Client
+	Configs *config.GlobalConfigurations
 }
 
 // NewEthBaseClient creates a new instance of the EthBaseClient
@@ -23,11 +25,12 @@ func NewEthBaseClient(dir string) *EthBaseClient {
 	}
 
 	return &EthBaseClient{
-		Client: client,
+		Client:  client,
+		Configs: config.GetGlobalConfigs(),
 	}
 }
 
-func getOwnerData(client *ethclient.Client, privateKeyStr string, value, gasLimit int64) *bind.TransactOpts {
+func (ec *EthBaseClient) GetOwnerData(client *ethclient.Client, privateKeyStr string, value, gasLimit int64) *bind.TransactOpts {
 	privateKey, err := crypto.HexToECDSA(privateKeyStr)
 	if err != nil {
 		log.Fatal(err)
