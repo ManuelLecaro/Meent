@@ -24,6 +24,7 @@ contract Meent is ERC721, Ownable, ChainlinkClient {
     mapping(uint256 => Event) public events;
     mapping(uint256 => address) public eventOwners;
     mapping (uint256 => string) private _tokenURIs;
+    event EventCreated(uint256 eventId);
 
     // required for Chainlink External API Calls
     using Chainlink for Chainlink.Request;
@@ -59,6 +60,7 @@ contract Meent is ERC721, Ownable, ChainlinkClient {
         eventOwners[nextEventId] = realOwner;
         uint256 currentEventId = nextEventId;
         nextEventId++;
+        emit EventCreated(currentEventId);
         return currentEventId;
     }
 
