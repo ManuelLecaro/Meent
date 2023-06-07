@@ -10,7 +10,7 @@ import (
 
 // SetupRoutes loads the handlers for the urls on the application
 func (a *Server) SetupRoutes() {
-	baseGroup := a.engine.Group(fmt.Sprintf("/api/%s", a.Config.GetString(config.NameConfig)))
+	baseGroup := a.engine.Group(fmt.Sprintf("/api/%s", config.GetNameConfigs()))
 
 	go setupHealthCheck(baseGroup)
 
@@ -26,16 +26,11 @@ func setupHealthCheck(g *gin.RouterGroup) {
 func (a *Server) setupIntegrationRoutes(g *gin.RouterGroup) {
 	integrationGroup := g.Group("/integration")
 
-	a.setupIntegrationTicketRoutes(integrationGroup)
 	a.setupIntegrationEventRoutes(integrationGroup)
 }
 
-func (a *Server) setupIntegrationTicketRoutes(g *gin.RouterGroup) {
-	g.POST("/event", nil)
-	g.GET("/event", nil)
-}
-
 func (a *Server) setupIntegrationEventRoutes(g *gin.RouterGroup) {
-	g.POST("/ticket", nil)
-	g.GET("/ticket/:id", nil)
+	g.POST("/event", a.Handler.Event.HandleCreate)
+	g.GET("/event/:id", a.Handler.Event.HandleGet)
+	g.GET("/event/:id/mint", nil)
 }

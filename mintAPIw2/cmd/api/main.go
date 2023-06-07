@@ -11,19 +11,7 @@ import (
 )
 
 func main() {
-	logger, err := zap.NewProduction()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	sugar := logger.Sugar()
-
-	content, err := ioutil.ReadFile("docs/name.txt")
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(string(content))
+	initMessage()
 
 	container, err := di.BuildContainer()
 	if err != nil {
@@ -34,6 +22,11 @@ func main() {
 
 		app.SetupRoutes()
 
+		logger, err := zap.NewProduction()
+		if err != nil {
+			log.Fatal(err)
+		}
+		sugar := logger.Sugar()
 		sugar.Info("Initializing app")
 
 		app.RunApp()
@@ -42,4 +35,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func initMessage() {
+	content, err := ioutil.ReadFile("docs/name.txt")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(string(content))
 }

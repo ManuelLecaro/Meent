@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -60,12 +59,6 @@ func TestEvent_HandleCreate(t *testing.T) {
 			},
 			args: args{c: CreateEventRequest{
 				Name: "test_event",
-				Date: time.Now(),
-				Venue: CreateEventVenueRequest{
-					Name:    "test_name",
-					Address: "test_address",
-				},
-				Description: "test_descriptions",
 			}},
 			wantStatus:       http.StatusCreated,
 			wantResponseBody: `{"id":{"value":"3fa85f64-5717-4562-b3fc-2c963f66afa6"}}`,

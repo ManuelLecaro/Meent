@@ -40,6 +40,56 @@ func (_m *Event) Create(ctx context.Context, event *domain.Event) (*domain.Event
 	return r0, r1
 }
 
+// Get provides a mock function with given fields: ctx, eventID
+func (_m *Event) Get(ctx context.Context, eventID uint64) (*domain.Event, error) {
+	ret := _m.Called(ctx, eventID)
+
+	var r0 *domain.Event
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, uint64) (*domain.Event, error)); ok {
+		return rf(ctx, eventID)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, uint64) *domain.Event); ok {
+		r0 = rf(ctx, eventID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*domain.Event)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, uint64) error); ok {
+		r1 = rf(ctx, eventID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Mint provides a mock function with given fields: ctx, ticketID
+func (_m *Event) Mint(ctx context.Context, ticketID uint64) (string, error) {
+	ret := _m.Called(ctx, ticketID)
+
+	var r0 string
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, uint64) (string, error)); ok {
+		return rf(ctx, ticketID)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, uint64) string); ok {
+		r0 = rf(ctx, ticketID)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, uint64) error); ok {
+		r1 = rf(ctx, ticketID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 type mockConstructorTestingTNewEvent interface {
 	mock.TestingT
 	Cleanup(func())

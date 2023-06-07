@@ -6,6 +6,7 @@ import (
 	"mintapi/internal/core/domain"
 	"mintapi/internal/core/port/service"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -16,26 +17,21 @@ type Event struct {
 }
 
 type CreateEventRequest struct {
-	Name        string                  `json:"name" binding:"required"`
-	Date        time.Time               `json:"date" binding:"required"`
-	Venue       CreateEventVenueRequest `json:"venue" binding:"required"`
-	Description string                  `json:"description"`
-}
-
-type CreateEventVenueRequest struct {
-	Name    string `json:"name" binding:"required"`
-	Address string `json:"address" binding:"required"`
+	Name        string `json:"name" binding:"required"`
+	Price       uint64 `json:"price" binding:"required"`
+	TotalTicket uint64 `json:"total_ticket" binding:"required"`
+	TotalReward uint64 `json:"total_reward" binding:"required"`
+	RealOwner   string `json:"real_owner" binding:"required"`
 }
 
 func (r CreateEventRequest) toDomainEvent() *domain.Event {
 	return &domain.Event{
 		Name:        r.Name,
-		Description: r.Description,
-		Date:        uint64(r.Date.Unix()),
-		Venue: &domain.Venue{
-			Name:    r.Venue.Name,
-			Address: r.Venue.Address,
-		},
+		Description: "",
+		Price:       r.Price,
+		TotalTicket: r.TotalTicket,
+		RealOwner:   r.RealOwner,
+		TotalReward: r.TotalReward,
 	}
 }
 
@@ -78,12 +74,9 @@ func (e *Event) HandleGet(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
-	var req CreateEventRequest
-
-	if err := e.getAndValidateBody(c, req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
-		return
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
 	}
 
 	resultChan := make(chan struct {
@@ -92,7 +85,7 @@ func (e *Event) HandleGet(c *gin.Context) {
 	})
 
 	go func() {
-		res, err := e.EventSrv.Create(ctx, req.toDomainEvent())
+		res, err := e.EventSrv.Get(ctx, id)
 
 		resultChan <- struct {
 			Value *domain.Event
@@ -100,7 +93,24 @@ func (e *Event) HandleGet(c *gin.Context) {
 		}{Value: res, Error: err}
 	}()
 
-	handleResponse(c, resultChan, http.StatusCreated)
+	handleResponse(c, resultChan, http.StatusOK)
+}
+
+func (e *Event) HandleMint(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+	}
+
+	url, err := e.EventSrv.Mint(ctx, id)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+	}
+
+	c.String(http.StatusOK, url)
 }
 
 func (e *Event) getAndValidateBody(c *gin.Context, req interface{}) error {

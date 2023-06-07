@@ -1,0 +1,13 @@
+{
+  "_": 110111,
+  "description": "TicketQR Data",
+  "external_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ\u0026pp=ygUIcmlja3JvbGw%3D",
+  "image_url": "https://ipfs.io/ipfs/Qmc4URyEjPrMeWoDDaYhf9aMATZ2F9wUmjWegBBiFDB1jZ",
+  "name": "test_concert",
+  "attributes": [
+    {
+      "trait_type": "ID",
+      "value": 110111
+    }
+  ]
+}

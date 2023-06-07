@@ -2,9 +2,12 @@ package di
 
 import (
 	"mintapi/internal/core/event"
-	"mintapi/internal/core/ticket"
+	"mintapi/internal/core/port/resource"
 	"mintapi/internal/infra/config"
+	"mintapi/internal/infra/ipfs"
 	"mintapi/internal/infra/quicknode"
+	"mintapi/internal/infra/quicknode/contract/meent"
+
 	"mintapi/internal/infra/rest"
 	"mintapi/internal/infra/rest/handler"
 
@@ -16,24 +19,23 @@ var Container *dig.Container
 func BuildContainer() (*dig.Container, error) {
 	Container = dig.New()
 
-	Container = dig.New()
+	config.LoadConfiguration()
 
-	configs := config.LoadConfiguration()
+	err := Container.Provide(func() resource.Contract {
+		ethClient := quicknode.NewEthBaseClient(config.GetQuickNodeConfigs())
 
-	err := Container.Provide(func() *quicknode.EthBaseClient {
-		return quicknode.NewEthBaseClient(configs.GetString("QUICKNODE_URL"))
+		return meent.NewContractManager(*ethClient, config.GetContractAdressConfigs())
 	})
+
+	err = Container.Provide(ipfs.NewIPFSService)
 
 	err = Container.Provide(event.NewEventService)
 
-	err = Container.Provide(ticket.NewTicketService)
-
 	err = Container.Provide(handler.NewEvent)
-	err = Container.Provide(handler.NewTicket)
 
-	err = Container.Provide(func() *rest.Server {
-		return rest.NewServer(configs.GetString("APP_NAME"))
-	})
+	err = Container.Provide(rest.NewHttpHandler)
+
+	err = Container.Provide(rest.NewServer)
 
 	return Container, err
 }

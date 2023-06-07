@@ -9,15 +9,18 @@ import (
 )
 
 const (
-	PortConfig                = "server.port"
-	portConfigDefaultValue    = "3000"
-	NameConfig                = "server.name"
-	NameConfigDefaultValue    = "mintAPI"
-	VersionConfig             = "VERSION"
-	VersionConfigDefaultValue = "0.0.1"
-	DebugConfig               = "DEBUG"
-	DebugConfigDefaultValue   = false
-	OwnerPrivateKey           = "OWNER_PRIVATE_KEY"
+	PortConfig      = "server.port"
+	NameConfig      = "server.name"
+	EthQuickURL     = "ethereum.quicknode"
+	ContractAdress  = "ethereum.contract_address"
+	OwnerPrivateKey = "owner.privatekey"
+	QRDir           = "qr.dir"
+	IPFSURI         = "ipfs.url"
+)
+
+const (
+	portConfigDefaultValue = "3000"
+	NameConfigDefaultValue = "meent"
 )
 
 // Configurations are configuration settings for the application
@@ -57,4 +60,32 @@ func LoadConfiguration() *viper.Viper {
 
 func GetGlobalConfigs() *GlobalConfigurations {
 	return Configurations
+}
+
+func GetPortConfigs() string {
+	return Configurations.ConfigurationAccess.GetString(PortConfig)
+}
+
+func GetNameConfigs() string {
+	return Configurations.ConfigurationAccess.GetString(NameConfig)
+}
+
+func GetQuickNodeConfigs() string {
+	return Configurations.ConfigurationAccess.GetString(EthQuickURL)
+}
+
+func GetContractAdressConfigs() string {
+	return Configurations.ConfigurationAccess.GetString(ContractAdress)
+}
+
+func GetOwnerPrivateKey() string {
+	return Configurations.ConfigurationAccess.GetString(OwnerPrivateKey)
+}
+
+func GetQRDirectory() string {
+	return Configurations.ConfigurationAccess.GetString(QRDir)
+}
+
+func GetIPFSURL() string {
+	return Configurations.ConfigurationAccess.GetString(IPFSURI)
 }

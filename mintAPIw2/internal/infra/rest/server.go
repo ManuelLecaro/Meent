@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"mintapi/internal/infra/config"
+	"mintapi/internal/infra/rest/handler"
 	"os"
 	"os/signal"
 	"time"
@@ -18,17 +19,31 @@ type Server struct {
 	StatusReady  chan bool
 	StatusKilled chan bool
 	Config       *viper.Viper
+	Handler      *HttpHandler
 }
 
-func NewServer(appName string) *Server {
+type HttpHandler struct {
+	Event *handler.Event
+}
+
+// NewHttpHandler creates a new HttpHandler instance
+func NewHttpHandler(event *handler.Event) *HttpHandler {
+	return &HttpHandler{
+		Event: event,
+	}
+}
+
+func NewServer(handler *HttpHandler) *Server {
 	gin.SetMode(gin.ReleaseMode)
 
 	server := gin.New()
 
+	config.LoadConfiguration()
+
 	server.Use(
 		requestid.New(),
 		gin.Recovery(),
-		gin.LoggerWithConfig(GetLoggerConfig(appName)),
+		gin.LoggerWithConfig(GetLoggerConfig(config.GetNameConfigs())),
 	)
 
 	newSrv := &Server{
@@ -36,6 +51,7 @@ func NewServer(appName string) *Server {
 		StatusReady:  make(chan bool),
 		StatusKilled: make(chan bool),
 		Config:       config.LoadConfiguration(),
+		Handler:      handler,
 	}
 
 	newSrv.initInfrastructure()
@@ -76,9 +92,10 @@ func (a *Server) initInfrastructure() {
 }
 
 func (a *Server) runServer() {
-	log.Println("running app server at port: ", a.Config.GetString(config.PortConfig))
-	if err := a.engine.Run(fmt.Sprintf(":%s", a.Config.GetString(config.PortConfig))); err != nil {
-		log.Println("Shutting down the server")
+	log.Printf("running %s app server at port: %s \n", config.GetNameConfigs(), config.GetPortConfigs())
+	if err := a.engine.Run(fmt.Sprintf(":%s", config.GetPortConfigs())); err != nil {
+		log.Fatal("Shutting down the server because: ", err)
+
 	}
 }
 
