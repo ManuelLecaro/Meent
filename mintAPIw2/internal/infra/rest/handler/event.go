@@ -42,7 +42,7 @@ func NewEvent(srv service.Event) *Event {
 }
 
 func (e *Event) HandleCreate(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	_, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
 	var req CreateEventRequest
@@ -53,7 +53,9 @@ func (e *Event) HandleCreate(c *gin.Context) {
 		return
 	}
 
-	resultChan := make(chan struct {
+	c.JSON(http.StatusCreated, nil)
+
+	/*resultChan := make(chan struct {
 		Value *domain.Event
 		Error error
 	})
@@ -67,19 +69,23 @@ func (e *Event) HandleCreate(c *gin.Context) {
 		}{Value: res, Error: err}
 	}()
 
-	handleResponse(c, resultChan, http.StatusCreated)
+	handleResponse(c, resultChan, http.StatusCreated)*/
 }
 
 func (e *Event) HandleGet(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	_, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
-	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	_, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
 	}
 
-	resultChan := make(chan struct {
+	c.Status(http.StatusOK)
+
+	return
+
+	/*resultChan := make(chan struct {
 		Value *domain.Event
 		Error error
 	})
@@ -93,24 +99,24 @@ func (e *Event) HandleGet(c *gin.Context) {
 		}{Value: res, Error: err}
 	}()
 
-	handleResponse(c, resultChan, http.StatusOK)
+	handleResponse(c, resultChan, http.StatusOK)*/
 }
 
 func (e *Event) HandleMint(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	_, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
-	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	_, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
 	}
 
-	url, err := e.EventSrv.Mint(ctx, id)
+	/*url, err := e.EventSrv.Mint(ctx, id)
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
-	}
+	}*/
 
-	c.String(http.StatusOK, url)
+	c.String(http.StatusOK, "https://ipfs.io/ipfs/QmQXN3kuPmfYTZ5QhoNhp1vzEtgNokJqNST8MufEXqZDpq")
 }
 
 func (e *Event) getAndValidateBody(c *gin.Context, req interface{}) error {

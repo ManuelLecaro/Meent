@@ -1,0 +1,18 @@
+# server
+[server]
+port = 8090
+debug = "false"
+name = "meent"
+
+[ethereum]
+quicknode = "HTTP://127.0.0.1:7545"
+contract_address = ""
+
+[owner]
+privatekey = ""
+
+[qr]
+dir="files"
+
+[ipfs]
+url="http://127.0.0.1:5001"

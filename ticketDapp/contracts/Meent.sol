@@ -2,10 +2,10 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
+import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "../node_modules/@openzeppelin/contracts/utils/Strings.sol";
+import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
+import "../node_modules/@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 
 contract Meent is ERC721, Ownable, ChainlinkClient {
     using Strings for uint256;
@@ -89,7 +89,7 @@ contract Meent is ERC721, Ownable, ChainlinkClient {
         _safeMint(msg.sender, ticketId);
         
         // Once minted, call to API to create metadata and set TokenURI
-        requestTicketMetadataCreation(ticketId);
+        // requestTicketMetadataCreation(ticketId);
 
         events[eventId].ticketsSold++;
 

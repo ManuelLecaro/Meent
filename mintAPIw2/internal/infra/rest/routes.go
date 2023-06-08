@@ -32,5 +32,5 @@ func (a *Server) setupIntegrationRoutes(g *gin.RouterGroup) {
 func (a *Server) setupIntegrationEventRoutes(g *gin.RouterGroup) {
 	g.POST("/event", a.Handler.Event.HandleCreate)
 	g.GET("/event/:id", a.Handler.Event.HandleGet)
-	g.GET("/event/:id/mint", nil)
+	g.GET("/event/:id/mint", a.Handler.Event.HandleMint)
 }
