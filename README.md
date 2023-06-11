@@ -43,6 +43,11 @@ The API provides the following endpoints:
 
 For detailed information on the API endpoints and request/response formats, please refer to the API documentation.
 
+## Frontend
+
+You can download the frontend from this repo: ` git clone https://github.com/daniel0ar/MeentFrontend`
+Follow its readme instructions and deploy it on local
+
 ## Contributing
 
 We welcome contributions from the community to improve and enhance the Meent platform. If you'd like to contribute, please follow our [contribution guidelines](CONTRIBUTING.md).
